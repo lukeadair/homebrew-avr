@@ -50,25 +50,10 @@ class AvrGccAT11 < Formula
   current_build = build
 
   resource "avr-libc" do
-    url "https://download.savannah.gnu.org/releases/avr-libc/avr-libc-2.0.0.tar.bz2"
-    mirror "https://download-mirror.savannah.gnu.org/releases/avr-libc/avr-libc-2.0.0.tar.bz2"
-    sha256 "b2dd7fd2eefd8d8646ef6a325f6f0665537e2f604ed02828ced748d49dc85b97"
-
-    if current_build.with? "ATMega168pbSupport"
-      patch do
-        url "https://raw.githubusercontent.com/osx-cross/homebrew-avr/d2e2566b06b90355952ed996707a0a1a24673cd3/Patch/avr-libc-add-mcu-atmega168pb.patch"
-        sha256 "7a2bf2e11cfd9335e8e143eecb94480b4871e8e1ac54392c2ee2d89010b43711"
-      end
-    end
+    url "https://github.com/avrdudes/avr-libc/archive/refs/tags/avr-libc-2_1_0-release.tar.gz"
+    sha256 "97a5ffb25ad7ca0a241e8a73167fed8cbef6a2472822ccb697cb0df70f51e836"
   end
 
-  # This patch fixes a GCC compilation error on Apple ARM systems by adding
-  # a defintion for host_hooks.  Patch comes from
-  # https://github.com/riscv/riscv-gnu-toolchain/issues/800#issuecomment-808722775
-  patch do
-    url "https://gist.githubusercontent.com/DavidEGrayson/88bceb3f4e62f45725ecbb9248366300/raw/c1f515475aff1e1e3985569d9b715edb0f317648/gcc-11-arm-darwin.patch"
-    sha256 "c4e9df9802772ddecb71aa675bb9403ad34c085d1359cb0e45b308ab6db551c6"
-  end
 
   def install
     # GCC will suffer build errors if forced to use a particular linker.
@@ -138,13 +123,6 @@ class AvrGccAT11 < Formula
       ENV.delete "LD"
       ENV.delete "CC"
       ENV.delete "CXX"
-
-      # avr-libc ships with outdated config.guess and config.sub scripts that
-      # do not support Apple ARM systems, causing the configure script to fail.
-      if OS.mac? && Hardware::CPU.arm?
-        ENV["ac_cv_build"] = "aarch64-apple-darwin"
-        puts "Forcing build system to aarch64-apple-darwin."
-      end
 
       system "./bootstrap" if current_build.with? "ATMega168pbSupport"
       system "./configure", "--prefix=#{prefix}", "--host=avr"
