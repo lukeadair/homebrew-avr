@@ -46,16 +46,8 @@ class AvrGccAT9 < Formula
   current_build = build
 
   resource "avr-libc" do
-    url "https://download.savannah.gnu.org/releases/avr-libc/avr-libc-2.0.0.tar.bz2"
-    mirror "https://download-mirror.savannah.gnu.org/releases/avr-libc/avr-libc-2.0.0.tar.bz2"
-    sha256 "b2dd7fd2eefd8d8646ef6a325f6f0665537e2f604ed02828ced748d49dc85b97"
-
-    if current_build.with? "ATMega168pbSupport"
-      patch do
-        url "https://raw.githubusercontent.com/osx-cross/homebrew-avr/d2e2566b06b90355952ed996707a0a1a24673cd3/Patch/avr-libc-add-mcu-atmega168pb.patch"
-        sha256 "7a2bf2e11cfd9335e8e143eecb94480b4871e8e1ac54392c2ee2d89010b43711"
-      end
-    end
+    url "https://github.com/avrdudes/avr-libc/archive/refs/tags/avr-libc-2_1_0-release.tar.gz"
+    sha256 "97a5ffb25ad7ca0a241e8a73167fed8cbef6a2472822ccb697cb0df70f51e836"
   end
 
   # This patch fixes a GCC compilation error on Apple ARM systems by adding
